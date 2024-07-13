@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../static/css/styles.css">
+    <title>Import XML Data</title>
+</head>
+<style>
+    .center-container {
+      display: flex; /* Usa flexbox para o layout */
+      justify-content: center; /* Centraliza horizontalmente */
+      align-items: center; /* Centraliza verticalmente */
+      height: 100vh; /* Faz o contêiner ter a altura total da viewport */
+    }
+  </style>
+<body>
+    <h1>Import XML Data</h1>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                <li style="text-align: center;">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    <form method="post" action="/import" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".xml">
+        <input type="submit" value="Upload" class="styled-button">
+    </form>
+    <br>
+
+    <div class="center-container">
+        <a href="/search">Go to Search</a>
+      </div>
+</body>
+</html>

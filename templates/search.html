@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Search Items</title>
+</head>
+
+<body>
+    <a href="/import" class="import-button">Import Data</a>
+
+    <h1>Search Items</h1>
+    <link rel="stylesheet" type="text/css" href="../static/css/styles.css">
+    <form method="post" action="/search">
+        <input type="text" name="query" placeholder="Search..." value="{{ query }}">
+        <label><input type="checkbox" name="misspelling" {% if misspelling %}checked{% endif %}> Busca com erro de
+            digitação</label>
+        <br>
+        <label><input type="checkbox" name="filter_by" value="cod_pedc" {% if 'cod_pedc' in filter_by %}checked{% endif
+                %}> COD_PEDC</label>
+        <label><input type="checkbox" name="filter_by" value="Fornecedor" {% if 'descricao' in filter_by %}checked{%
+                endif %}> DESCRICAO</label>
+        <label><input type="checkbox" name="filter_by" value="cod_item" {% if 'cod_item' in filter_by %}checked{% endif
+                %}> COD_ITEM</label>
+        <label><input type="checkbox" name="filter_by" value="id_item_ped" {% if 'id_item_ped' in filter_by %}checked{%
+                endif %}> ID_ITEM_PED</label>
+        <input type="submit" value="Search" class="styled-button">
+    </form>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li style="text-align: center;">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+    <table>
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>COD_PEDC</th>
+                <th>EMPR_ID</th>
+                <th>ID_ITEM_PED</th>
+                <th>ITEM Description</th>
+                <th>Fornecedor</th>
+                <th>COD_ITEM</th>
+                <th>QTDE</th>
+                <th>UNIT</th>
+                <th>TOTAL</th>
+                <th>VLR_ENTREGUE</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set ns = namespace(last_cod_cot='first') %}
+            {{last_cod_cot}}
+            {% for item in items %}
+
+            {% if ns.last_cod_cot != '' and ns.last_cod_cot != item.cod_pedc or ns.last_cod_cot == 'first' %}
+            <tr>
+                <td colspan="11" style="background-color: rgba(29, 206, 59, 0.541); text-align: center;">PEDIDO
+                    {{item.cod_pedc }}</td> <!-- Change the color to black -->
+
+
+            </tr>
+            {% endif %}
+            <tr>
+                <td>{{ item.dt_emis }}</td>
+                <td>{{ item.cod_pedc }}</td>
+                <td>{{ item.empr_id }}</td>
+                <td>{{ item.id_item_ped }}</td>
+                <td>{{ item.descricao_item }}</td>
+                <td>{{ item.descricao }}</td>
+                <td>{{ item.cod_item }}</td>
+                <td>{{ item.qtde_pedida }}</td>
+                <td>
+                    {% set tot_bruto_float = item.tot_bruto.replace(',', '.')|float %}
+                    {% set qtde_pedida_float = item.qtde_pedida.replace(',', '.')|float %}
+                    {% if qtde_pedida_float > 0 %}
+                    R$ {{ '%.2f'|format(tot_bruto_float / qtde_pedida_float) }}
+                    {% else %}
+                    Erro
+                    {% endif %}
+                </td>
+                <td>R$ {{ item.tot_bruto }}</td>
+
+                <td colspan="1" >{{ item.qtde_entregue }}</td>
+                {% set ns.last_cod_cot = item.cod_pedc %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+
+</html>
