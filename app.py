@@ -1,8 +1,9 @@
-from flask import Flask, request, render_template, redirect, url_for, flash
+from flask import Flask, request, render_template, redirect, url_for, flash,  jsonify
 from flask_sqlalchemy import SQLAlchemy
 import xml.etree.ElementTree as ET
 from collections import defaultdict
 import re
+from playwright.sync_api import sync_playwright, expect
 from fuzzywuzzy import fuzz
 
 app = Flask(__name__)
@@ -43,7 +44,45 @@ class Item(db.Model):
     cs_conta_desenhos = db.Column(db.String(50))
     cs_conta_pedidos = db.Column(db.String(50))
     cf_retorna_codigo = db.Column(db.String(50))
-
+    #comprador = db.Column(db.String(200))
+    #insert_by = db.Column(db.String(200))
+    
+    def to_dict(self):
+        return {
+            'dt_entrega': self.dt_entrega,
+            'id_item_ped': self.id_item_ped,
+            'masc_item_id': self.masc_item_id,
+            'ites_id': self.ites_id,
+            'empr_id': self.empr_id,
+            'itempr_id': self.itempr_id,
+            'descricao_item': self.descricao_item,
+            'cod_item': self.cod_item,
+            'descricao': self.descricao,
+            'cod_pedc': self.cod_pedc,
+            'dt_emis': self.dt_emis,
+            'moeped_id': self.moeped_id,
+            'qtde_pedida': self.qtde_pedida,
+            'qtde_entregue': self.qtde_entregue,
+            'qtde_canc': self.qtde_canc,
+            'cod_grp_ite': self.cod_grp_ite,
+            'cod_for': self.cod_for,
+            'tot_bruto': self.tot_bruto,
+            'vlr_entregue': self.vlr_entregue,
+            'tfd_i_id': self.tfd_i_id,
+            'cf_converte_moeda': self.cf_converte_moeda,
+            'cp_vlr_entregue': self.cp_vlr_entregue,
+            'cp_tot_bruto': self.cp_tot_bruto,
+            'cf_vlr_saldo': self.cf_vlr_saldo,
+            'cf_qtde_saldo': self.cf_qtde_saldo,
+            'cs_tot_bruto': self.cs_tot_bruto,
+            'cs_valor_entregue': self.cs_valor_entregue,
+            'cf_retorna_mascara': self.cf_retorna_mascara,
+            'cs_conta_desenhos': self.cs_conta_desenhos,
+            'cs_conta_pedidos': self.cs_conta_pedidos,
+            'cf_retorna_codigo': self.cf_retorna_codigo,
+           # 'comprador': self.comprador,
+           # 'insert_by': self.insert_by
+        }
     def __repr__(self):
         return f'<Item {self.cod_pedc}>'
 
@@ -53,9 +92,13 @@ with app.app_context():
 def fuzzy_search(query, items):
     results = []
     for item in items:
-        ratio = fuzz.partial_ratio(query.lower(), item.descricao.lower())
+        ratio = fuzz.partial_ratio(query.lower(), item.descricao_item.lower())
         if ratio >= 70:  # Adjust the threshold as needed
             results.append(item)
+        else:
+            ratio = fuzz.partial_ratio(query.lower(), item.descricao.lower())
+            if ratio >= 70:  # Adjust the threshold as needed
+                results.append(item)
     return results
 
 def parse_xml(xml_data):
@@ -110,6 +153,40 @@ def parse_xml(xml_data):
 def home():
     return redirect(url_for('search'))
 
+@app.route('/run_playwright', methods=['POST'])
+def run_playwright():
+    descricao = request.json.get('descricao')
+    dt_entrega = request.json.get('dt_entrega')
+
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch(headless=False)
+        context = browser.new_context()
+        page = context.new_page()
+        page.goto("https://auth.sieg.com/login?ReturnUrl=https%3a%2f%2fcofre.sieg.com%2fpesquisa-avancada")
+        page.get_by_placeholder("E-mail").click()
+        page.get_by_placeholder("E-mail").fill("")
+        page.get_by_placeholder("Senha").click()
+        page.get_by_placeholder("Senha").fill("")
+        page.get_by_role("button", name="Entrar").click()
+        page.get_by_role("combobox").click()
+        page.get_by_text("Razão Social Emitente").click()
+        page.get_by_role("combobox").nth(1).click()
+        page.get_by_ext("Contém").click()
+        page.get_by_role("textbox").nth(1).fill(descricao)
+        page.get_by_text("Adicionar campo").click()
+        page.get_by_role("combobox").nth(3).select_option("EmissionDate")
+        page.get_by_role("combobox").nth(4).select_option("$gte")
+        page.get_by_placeholder("dd/mm/yyyy").click()
+        page.get_by_placeholder("dd/mm/yyyy").fill(dt_entrega)
+        page.get_by_role("button", name="Buscar").click()
+
+        # ---------------------
+        context.close()
+        browser.close()
+
+    return jsonify({'status': 'success'})
+
+
 @app.route('/import', methods=['GET', 'POST'])
 def import_data():
     if request.method == 'GET':
@@ -137,12 +214,17 @@ def import_data():
     
     return redirect(url_for('home'), code=302)
 
+@app.route('/item/<int:item_id>')
+def item_detail(item_id):
+    item = Item.query.get_or_404(item_id)
+    return render_template('item_detail.html', item=item)
+
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     query = ''
     misspelling = False
-    filter_by = ['cod_pedc', 'descricao', 'cod_item', 'id_item_ped']
+    filter_by = ['cod_pedc', 'descricao', 'cod_item', 'id_item_ped', 'descricao_item']
 
     if request.method == 'POST':
         query = request.form.get('query', '')
@@ -151,6 +233,8 @@ def search():
 
         if query != "":
             filters = []
+            if 'descricao_item' in filter_by:
+                filters.append(Item.cod_pedc.contains(query))
             if 'cod_pedc' in filter_by:
                 filters.append(Item.cod_pedc.contains(query))
             if 'descricao' in filter_by:
