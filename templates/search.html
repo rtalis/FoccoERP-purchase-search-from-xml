@@ -1,100 +1,266 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Search Items</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Busca de Compras</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='image/favicon.ico') }}">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 95%;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-size: 24px;
+            color: #343a40;
+            margin: 0;
+        }
+        .import-button {
+            text-decoration: none;
+         
+            color: #fff;
+            background-color: #007bff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .import-button:hover {
+            background-color: #0056b3;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            width: 150%;
+            box-sizing: border-box;
+        }
+        .styled-button {
+            text-decoration: none;         
+            color: #fff;
+            background-color: #007bff;
+            padding: 10px 20px;
+            border-radius: 5px; /* Bordas arredondadas */
+            border: 1px solid #007bff; /* Borda */
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .styled-button:hover {
+            background-color: #0056b3;
+        }
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            color: #495057;
+        }
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .messages {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .messages ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .messages li {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        th {
+            background-color: #f1f1f1;
+        }
+        .item-row {
+            background-color: #f9f9f9;
+        }
+    </style>
 </head>
 <body>
-    <a href="/import" class="import-button">Import Data</a>
-
-    <h1>Search Items</h1>
-
-    <form method="post" action="/search">
-        <input type="text" name="query" placeholder="Search..." value="{{ query }}">
-        <label><input type="checkbox" name="misspelling" {% if misspelling %}checked{% endif %}> Busca com erro de digitação</label>
-        <br>
-        <label><input type="checkbox" name="filter_by" value="descricao_item" {% if 'descricao_item' in filter_by %}checked{% endif %}> Descrição do ped.</label>
-        <label><input type="checkbox" name="filter_by" value="cod_pedc" {% if 'cod_pedc' in filter_by %}checked{% endif %}> COD_PEDC</label>
-        <label><input type="checkbox" name="filter_by" value="descricao" {% if 'descricao' in filter_by %}checked{% endif %}> Fornecedor</label>
-        <label><input type="checkbox" name="filter_by" value="cod_item" {% if 'cod_item' in filter_by %}checked{% endif %}> COD_ITEM</label>
-        <label><input type="checkbox" name="filter_by" value="id_item_ped" {% if 'id_item_ped' in filter_by %}checked{% endif %}> ID_ITEM_PED</label>
-        <input type="submit" value="Search" class="styled-button">
-    </form>
-
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul>
-        {% for message in messages %}
-        <li style="text-align: center;">{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
-
-    <table>
-        <thead>
-            <tr>
-                <th>Data</th>
-                <th>COD PED</th>
-                <th>EMPR_ID</th>
-                <th>ID ITEM</th>
-                <th>ITEM Description</th>
-                <th>Fornecedor</th>
-                <th>COD ITEM</th>
-                <th>QTD</th>
-                <th>VL</th>
-                <th>VL T</th>
-                <th>ENTREG</th>
-                <th>Opçoẽs</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% set ns = namespace(last_cod_cot='first') %}
-            {% for item in items %}
-            {% if ns.last_cod_cot != '' and ns.last_cod_cot != item.cod_pedc or ns.last_cod_cot == 'first' %}
-            <tr>
-                <td colspan="12" style="background-color: rgba(29, 206, 59, 0.541); text-align: center;">PEDIDO
-                    {{item.cod_pedc }}</td> 
-            </tr>
-            {% endif %}
-            <tr class="item-row">
-                <td>{{ item.dt_emis }}</td>
-                <td>{{ item.cod_pedc }}</td>
-                <td>{{ item.empr_id }}</td>
-                <td>{{ item.id_item_ped }}</td>
-                <td>{{ item.descricao_item }}</td>
-                <td>{{ item.descricao }}</td>
-                <td>{{ item.cod_item }}</td>
-                <td>{{ item.qtde_pedida }}</td>
-                <td>
-                    {% set tot_bruto_float = item.tot_bruto.replace(',', '.')|float %}
-                    {% set qtde_pedida_float = item.qtde_pedida.replace(',', '.')|float %}
-                    {% if qtde_pedida_float > 0 %}
-                    R$ {{ '%.2f'|format(tot_bruto_float / qtde_pedida_float) }}
-                    {% else %}
-                    Erro
-                    {% endif %}
-                </td>
-                <td>R$ {{ item.tot_bruto }}</td>
-                <td>{{ item.qtde_entregue }}</td>
-                <td><a href="{{ url_for('item_detail', item_id=item.id) }}"> Mais... </a></td>
-               <!-- <td><a href="#" onclick="runPlaywright('{{ item.descricao }}', '{{ item.dt_emis }}')">Run Playwright</a></td>-->
-
-                {% set ns.last_cod_cot = item.cod_pedc %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <!-- Modal for item details -->
-    <div id="item-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Item Details</h2>
-            <p id="item-details"></p>
+    <div class="container">
+        <div class="header">
+            <a href="/import" class="import-button">Import</a>
+            <h1>Busca de Compras - Última Atualização em {{ last_update_date }}</h1>
         </div>
-    </div>
 
-    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
-</body>
-</html>
+        <form method="post" action="/search">
+            <div class="search-container">
+                <input type="text" name="query" placeholder="Buscar..." value="{{ query }}">
+                <input type="submit" value="Search" class="styled-button">
+            </div>
+
+            <div class="checkbox-group">
+                <label>
+                    <input type="checkbox" name="filter_by" value="cod_item" {% if 'cod_item' in filter_by %}checked{% endif %}>
+                    Cod. Item
+                </label>
+                <label>
+                    <input type="checkbox" name="filter_by" value="descricao_item" {% if 'descricao_item' in filter_by %}checked{% endif %}>
+                    Descrição do Item
+                </label>
+                <label>
+                    <input type="checkbox" name="filter_by" value="cod_pedc" {% if 'cod_pedc' in filter_by %}checked{% endif %}>
+                    Pedido de Compra
+                </label>
+                <label>
+                    <input type="checkbox" name="filter_by" value="descricao" {% if 'descricao' in filter_by %}checked{% endif %}>
+                    Fornecedor
+                </label>
+                <label>
+                    <input type="checkbox" name="misspelling" {% if misspelling %}checked{% endif %}>
+                    Busca com erro de digitação
+                </label>
+            </div>
+        </form>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="messages">
+            <ul>
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Data</th>
+            
+                    <th>Cod. Item</th>
+                    <th>Descrição do Item</th>
+                    <th>Cod. for</th>
+                    <th>Fornecedor</th>
+                    <th>Qnd.</th>
+                    <th>Vl.</th>
+                    <th>Vl. t.</th>
+                    <th>Qnd. e.</th>
+                    <th>Vl. e.</th>
+                    <th>Opções</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set ns = namespace(last_cod_cot='first', total_bruto=0, item_count=0) %}
+                {% for item in items %}
+                {% if ns.last_cod_cot != '' and ns.last_cod_cot != item.cod_pedc or ns.last_cod_cot == 'first' %}
+                {% if ns.item_count > 1 %}
+                <tr>
+                    {% if 'cod_item' in filter_by and query != '' or 'descricao_item' in filter_by and query != '' %}
+                    <td colspan=100% style="background-color: rgba(255, 231, 231, 0.541); text-align: right;">Total Bruto: R$ {{ '%.2f'|format(ns.total_bruto) }}</td>
+                    {% else %}
+                    <td colspan=100% style="background-color: rgba(212, 212, 212, 0.541); text-align: right;">Total Bruto: R$ {{ '%.2f'|format(ns.total_bruto) }}</td>
+                    {% endif %}
+                </tr>
+                {% endif %}
+                <tr>
+                    <td colspan=100% style="background-color: rgba(135, 160, 240, 0.541); text-align: center;">PEDIDO {{item.cod_pedc }}</td>
+                </tr>
+                {% set ns.total_bruto = 0 %}
+                {% set ns.item_count = 0 %}
+                {% set ns.last_cod_cot = item.cod_pedc %}
+                {% endif %}
+                <tr class="item-row">
+                    <td>{{ item.dt_emis }}</td>
+           
+                    <td>{{ item.cod_item }}</td>
+                    <td>{{ item.descricao_item }}</td>
+                
+                    <td>{{ item.cod_for }}</td>
+                    <td>{{ item.descricao }}</td>
+                    <td>{{ item.qtde_pedida }}</td>
+                    <td>
+                        {% set tot_bruto_float = item.tot_bruto.replace(',', '.')|float %}
+                        {% set qtde_pedida_float = item.qtde_pedida.replace(',', '.')|float %}
+                        {% if qtde_pedida_float > 0 %}
+                        R$ {{ '%.2f'|format(tot_bruto_float / qtde_pedida_float) }}
+                        {% else %}
+                        Erro
+                        {% endif %}
+                    </td>
+                    <td>R$ {{ item.tot_bruto }}</td>
+                    <td>{{ item.qtde_entregue }}</td>
+                    <td>R$ {{ item.vlr_entregue }}</td>
+
+                    <td><a href="{{ url_for('item_detail', item_id=item.id) }}">Mais...</a></td>
+                    {% set ns.total_bruto = ns.total_bruto + tot_bruto_float %}
+                    {% set ns.item_count = ns.item_count + 1 %}
+                </tr>
+                {% endfor %}
+                {% if ns.item_count > 1 %}
+                <tr>
+                    {% if 'cod_item' in filter_by and query != '' or 'descricao_item' in filter_by and query != "" %}
+                    <td colspan=100% style="background-color: rgba(255, 159, 159, 0.541); text-align: right;">?Total Bruto: R$ {{ '%.2f'|format(ns.total_bruto) }}</td>
+                    {% else %}
+                    <td colspan=100% style="background-color: rgba(212, 212, 212, 0.541); text-align: right;">Total Bruto: R$ {{ '%.2f'|format(ns.total_bruto) }}</td>
+                    {% endif %}
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+        
+    
+        <!-- Modal for item details -->
+        <div id="item-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Item Details</h2>
+                <p id="item-details"></p>
+            </div>
+        </div>
+    
+        <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+    </body>
+    </html>

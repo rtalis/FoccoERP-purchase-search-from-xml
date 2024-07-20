@@ -139,14 +139,15 @@ a[href="/search"]:hover {
 
 .import-button {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 30px;
+    right: 40px;
     padding: 8px 15px;
     background-color: #007bff;
     color: white;
     text-decoration: none;
     border-radius: 5px;
     font-weight: bold;
+    font-size: x-small;
 }
 
 .modal {

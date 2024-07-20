@@ -103,7 +103,9 @@ def fuzzy_search(query, items):
 
 def parse_xml(xml_data):
     root = ET.fromstring(xml_data)
-    count_success = 0  # Counter for successful imports
+    count_success = 0 
+    count_updates = 0
+    # Counter for successful imports
 
     for g_item in root.findall('.//G__ITEM'):
         item_data = {
@@ -138,20 +140,35 @@ def parse_xml(xml_data):
             'cs_conta_desenhos': g_item.find('CS_CONTA_DESENHOS').text,
             'cs_conta_pedidos': g_item.find('CS_CONTA_PEDIDOS').text,
             'cf_retorna_codigo': g_item.find('CF_RETORNA_CODIGO').text
+            
         }
 
-        existing_item = Item.query.filter_by(cod_pedc=item_data['cod_pedc'], empr_id=item_data['empr_id'], descricao_item=item_data['descricao_item']).first()
-        if not existing_item:
+        existing_item = Item.query.filter_by(
+            cod_pedc=item_data['cod_pedc'], 
+            empr_id=item_data['empr_id'], 
+            descricao_item=item_data['descricao_item']
+        ).first()
+        
+        if existing_item:
+            for key, value in item_data.items():
+                setattr(existing_item, key, value)
+            count_updates += 1
+        else:
             new_item = Item(**item_data)
             db.session.add(new_item)
-            count_success += 1  # Increment the count for each successfully added item
-    
+            count_success += 1
+
     db.session.commit()
-    return count_success  # Return the count of successful imports
+    
+    return count_success, count_updates
 
 @app.route('/')
 def home():
     return redirect(url_for('search'))
+
+@app.route('/favicon.ico')
+def favicon():
+    return url_for('static', filename='image/favicon.ico')
 
 @app.route('/run_playwright', methods=['POST'])
 def run_playwright():
@@ -209,8 +226,8 @@ def import_data():
     
     # Proceed with handling the valid XML file
     xml_data = file.read()
-    success_count = parse_xml(xml_data)  # Get the count of successful imports
-    flash(f'{success_count} entries imported successfully')
+    success_count, update_count = parse_xml(xml_data)  # Get the count of successful imports
+    flash(f'{success_count} entradas adicionadas e {update_count} entradas atualizadas com sucesso!')
     
     return redirect(url_for('home'), code=302)
 
@@ -224,7 +241,7 @@ def item_detail(item_id):
 def search():
     query = ''
     misspelling = False
-    filter_by = ['cod_pedc', 'descricao', 'cod_item', 'id_item_ped', 'descricao_item']
+    filter_by = ['cod_pedc', 'descricao', 'cod_item', 'descricao_item']
 
     if request.method == 'POST':
         query = request.form.get('query', '')
@@ -234,27 +251,33 @@ def search():
         if query != "":
             filters = []
             if 'descricao_item' in filter_by:
-                filters.append(Item.cod_pedc.contains(query))
+                filters.append(Item.descricao_item.contains(query))
             if 'cod_pedc' in filter_by:
                 filters.append(Item.cod_pedc.contains(query))
             if 'descricao' in filter_by:
                 filters.append(Item.descricao.contains(query))
             if 'cod_item' in filter_by:
                 filters.append(Item.cod_item.contains(query))
-            if 'id_item_ped' in filter_by:
-                filters.append(Item.id_item_ped.contains(query))
             
             if misspelling:
                 items = Item.query.order_by(Item.cod_pedc.desc()).all()
                 results = fuzzy_search(query, items)
             else:
+                if filters == []:
+                   query = ""
                 results = Item.query.filter(db.or_(*filters)).order_by(Item.cod_pedc.desc()).all()
+                                
+            
         else:
-            results = Item.query.order_by(Item.cod_pedc.desc()).all()
+            results = Item.query.order_by(Item.cod_pedc.desc()).limit(100).all()
     else:
-        results = Item.query.order_by(Item.cod_pedc.desc()).all()
-   
-    return render_template('search.html', items=results, query=query, misspelling=misspelling, filter_by=filter_by)
+        results = Item.query.order_by(Item.cod_pedc.desc()).limit(100).all()
+        
+    last_updated_item = Item.query.order_by(Item.cod_pedc.desc()).first()
+    last_update_date = last_updated_item.dt_emis if last_updated_item else "No updates"
+
+    return render_template('search.html', items=results, query=query, misspelling=misspelling, filter_by=filter_by, last_update_date=last_update_date)
+
 
 
 
