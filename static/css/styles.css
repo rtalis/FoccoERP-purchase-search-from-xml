@@ -214,3 +214,120 @@ body {
     width: 80%;
     word-wrap: break-word;
 }
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+.container {
+    max-width: 95%;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+.header h1 {
+    font-size: 24px;
+    color: #343a40;
+    margin: 0;
+}
+.import-button {
+    text-decoration: none;
+ 
+    color: #fff;
+    background-color: #007bff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+.import-button:hover {
+    background-color: #0056b3;
+}
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.search-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    width: 150%;
+    box-sizing: border-box;
+}
+.styled-button {
+    text-decoration: none;         
+    color: #fff;
+    background-color: #007bff;
+    padding: 10px 20px;
+    border-radius: 5px; /* Bordas arredondadas */
+    border: 1px solid #007bff; /* Borda */
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+.styled-button:hover {
+    background-color: #0056b3;
+}
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    color: #495057;
+}
+.checkbox-group input[type="checkbox"] {
+    margin-right: 10px;
+}
+.messages {
+    margin-top: 20px;
+    text-align: center;
+}
+.messages ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.messages li {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+}
+th {
+    background-color: #f1f1f1;
+}
+.item-row {
+    background-color: #f9f9f9;
+}

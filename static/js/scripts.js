@@ -85,3 +85,10 @@ function runPlaywright(descricao, dt_entrega) {
         // Handle error feedback to the user
     });
 }
+
+document.getElementById('misspelling-checkbox').addEventListener('change', function() {
+    if (this.checked) {
+        document.querySelector('input[name="filter_by"][value="descricao"]').checked = false;
+        document.querySelector('input[name="filter_by"][value="cod_pedc"]').checked = false;
+    }
+});
