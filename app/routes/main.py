@@ -1,6 +1,7 @@
 import re
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required
+from sqlalchemy import Integer, cast
 from app.models import Item
 from app.utils import parse_xml, fuzzy_search
 from app import db
@@ -27,8 +28,8 @@ def import_data():
         flash('No selected file')
         return redirect(request.url)
     
-    if not re.match(r'^RPDC.*B.*\.xml$', file.filename, re.IGNORECASE):
-        flash('Invalid format. Please upload an XML file.')
+    if not re.match(r'^RPDC.*(B|C).*\.xml$', file.filename, re.IGNORECASE):
+        flash('Formato inválido, insira um arquivo de relatório de compra de itens ou relatório de compra de no formato paisagem no formato XML')
         return redirect(request.url)
     
     xml_data = file.read()
@@ -42,6 +43,7 @@ def import_data():
 def item_detail(item_id):
     item = Item.query.get_or_404(item_id)
     return render_template('item_detail.html', item=item)
+
 
 
 @bp.route('/search', methods=['GET', 'POST'])
@@ -68,23 +70,21 @@ def search():
                 filters.append(Item.cod_item.contains(query))
             
             if misspelling:
-                items = Item.query.order_by(Item.cod_pedc.desc()).all()
+                items = Item.query.order_by(cast(Item.cod_pedc, Integer).desc()).all()
                 results = fuzzy_search(query, items)
             else:
                 if filters == []:
                    query = ""
-                results = Item.query.filter(db.or_(*filters)).order_by(Item.cod_pedc.desc()).all()
-                                
-            
+                results = Item.query.filter(db.or_(*filters)).order_by(cast(Item.cod_pedc, Integer).desc()).all()
+                           
         else:
-            results = Item.query.order_by(Item.cod_pedc.desc()).limit(100).all()
+            results = Item.query.order_by(cast(Item.cod_pedc, Integer).desc()).limit(100).all()
     else:
-        results = Item.query.order_by(Item.cod_pedc.desc()).limit(100).all()
+        results = Item.query.order_by(cast(Item.cod_pedc, Integer).desc()).limit(100).all()
         
-    last_updated_item = Item.query.order_by(Item.cod_pedc.desc()).first()
+    last_updated_item = Item.query.order_by(cast(Item.cod_pedc, Integer).desc()).first()
     last_update_date = last_updated_item.dt_emis if last_updated_item else "No updates"
 
     return render_template('search.html', items=results, query=query, misspelling=misspelling, filter_by=filter_by, last_update_date=last_update_date)
-
 
 

@@ -1,10 +1,15 @@
 import os
 import shutil
 from datetime import datetime, timedelta
+import os
+import sys
 
+# Set the working directory to the script's directory
+script_dir = os.path.dirname(os.path.abspath(__file__))
+os.chdir(script_dir)
 # Configuration
-DB_PATH = 'instance/data.db'  # Path to your SQLite database file
-BACKUP_DIR = 'instance'  # Directory where backups will be stored
+DB_PATH = '../../instance/data.db'  # Path to your SQLite database file
+BACKUP_DIR = '../../instance'  # Directory where backups will be stored
 DAILY_BACKUP_RETENTION = 7  # Keep daily backups for the last 7 days
 WEEKLY_BACKUP_RETENTION = 4  # Keep weekly backups for the last 4 weeks
 

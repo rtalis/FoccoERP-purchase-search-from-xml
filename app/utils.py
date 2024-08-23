@@ -15,12 +15,13 @@ def fuzzy_search(query, items):
                 results.append(item)
     return results
 
+
 def parse_xml(xml_data):
     root = ET.fromstring(xml_data)
     count_success = 0 
     count_updates = 0
-    # Counter for successful imports
 
+    # Parse the XML data for `G_ITEM` entries (for the `RPDC0250B.xml` format)
     for g_item in root.findall('.//G__ITEM'):
         item_data = {
             'dt_entrega': g_item.find('DT_ENTREGA').text,
@@ -54,7 +55,6 @@ def parse_xml(xml_data):
             'cs_conta_desenhos': g_item.find('CS_CONTA_DESENHOS').text,
             'cs_conta_pedidos': g_item.find('CS_CONTA_PEDIDOS').text,
             'cf_retorna_codigo': g_item.find('CF_RETORNA_CODIGO').text
-            
         }
 
         existing_item = Item.query.filter_by(
@@ -71,6 +71,23 @@ def parse_xml(xml_data):
             new_item = Item(**item_data)
             db.session.add(new_item)
             count_success += 1
+
+    # Parse the XML data for `CGG_TPEDC_ITEM` entries (for the `RPDC0250C.xml` format)
+    for cgg_item in root.findall('.//CGG_TPEDC_ITEM'):
+        cod_pedc = cgg_item.find('CODIGO_PEDIDO').text
+
+        existing_item = Item.query.filter_by(cod_pedc=cod_pedc).first()
+
+        if existing_item:
+            existing_item.qtde_atendida = cgg_item.find('QTDE_ATENDIDA').text
+            existing_item.unid_med = cgg_item.find('UNID_MED').text
+            num_nfs = []
+            for g_nfe in cgg_item.findall('.//G_NFE'):
+                num_nf = g_nfe.find('NUM_NF').text
+                if num_nf:
+                    num_nfs.append(num_nf)
+            existing_item.num_nf = num_nfs  # Assuming `num_nf` is stored as a list in the model
+            count_updates += 1
 
     db.session.commit()
     

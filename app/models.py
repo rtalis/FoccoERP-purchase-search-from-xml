@@ -35,6 +35,9 @@ class Item(db.Model):
     cs_conta_desenhos = db.Column(db.String(50))
     cs_conta_pedidos = db.Column(db.String(50))
     cf_retorna_codigo = db.Column(db.String(50))
+    num_nf = db.Column(db.PickleType, nullable=True)  # Storing list of NUM_NF
+    qtde_atendida = db.Column(db.String(50), nullable=True)
+    unid_med = db.Column(db.String(50), nullable=True)
     #comprador = db.Column(db.String(200))
     #insert_by = db.Column(db.String(200))
     
@@ -71,8 +74,12 @@ class Item(db.Model):
             'cs_conta_desenhos': self.cs_conta_desenhos,
             'cs_conta_pedidos': self.cs_conta_pedidos,
             'cf_retorna_codigo': self.cf_retorna_codigo,
+            'num_nf': self.num_nf,
+            'qtde_atendida': self.qtde_atendida,
+            'unid_med': self.unid_med
            # 'comprador': self.comprador,
            # 'insert_by': self.insert_by
+            
         }
     def __repr__(self):
         return f'<Item {self.cod_pedc}>'

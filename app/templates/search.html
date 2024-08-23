@@ -74,6 +74,7 @@
                     <th>Vl. t.</th>
                     <th>Qnd. e.</th>
                     <th>Vl. e.</th>
+                 
                     <th>Opções</th>
                 </tr>
             </thead>
@@ -91,7 +92,7 @@
                 </tr>
                 {% endif %}
                 <tr>
-                    <td colspan=100% style="background-color: rgba(135, 160, 240, 0.541); text-align: center;">PEDIDO {{item.cod_pedc }}</td>
+                    <td colspan=100% style="background-color: rgba(135, 160, 240, 0.541); text-align: center;">PEDIDO {{item.cod_pedc }} - Empresa {{item.empr_id }} - NFs {{item.num_nf }} </td>
                 </tr>
                 {% set ns.total_bruto = 0 %}
                 {% set ns.item_count = 0 %}
@@ -118,6 +119,7 @@
                     <td>R$ {{ item.tot_bruto }}</td>
                     <td>{{ item.qtde_entregue }}</td>
                     <td>R$ {{ item.vlr_entregue }}</td>
+                    
 
                     <td><a href="{{ url_for('main.item_detail', item_id=item.id) }}">Mais...</a></td>
                     {% set ns.total_bruto = ns.total_bruto + tot_bruto_float %}
