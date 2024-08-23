@@ -61,6 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+
 function runPlaywright(descricao, dt_entrega) {
     // Call Playwright script via a fetch request to your backend endpoint
     fetch('/run_playwright', {

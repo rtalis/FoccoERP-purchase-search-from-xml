@@ -12,12 +12,41 @@ body {
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
     color: #333;
     text-align: center;
+}
+
+a {
+    color: #007bff;
+    /* Link color */
+    text-decoration: none;
+    /* Remove underline */
+    font-weight: normal;
+    /* Normal font weight */
+}
+
+/* Link on hover */
+a:hover {
+    color: #0056b3;
+    /* Color when hovered */
+    text-decoration: underline;
+    /* Underline on hover */
+}
+
+/* Visited link */
+a:visited {
+    color: #0069c5;
+    /* Color for visited links */
+}
+
+/* Active link (clicked) */
+a:active {
+    color: #003d7a;
+    /* Color for active links */
 }
 
 form {
@@ -42,10 +71,12 @@ table {
     margin-top: 20px;
 }
 
-th, td {
+th,
+td {
     padding: 10px 12px;
     border: 1px solid #ccc;
     text-align: left;
+    font-size: medium;
 }
 
 th {
@@ -66,6 +97,7 @@ tr:hover {
     text-align: center;
     font-weight: bold;
 }
+
 form input[type="file"],
 form input[type="submit"] {
     margin: 10px;
@@ -101,55 +133,85 @@ form input[type="submit"] {
 }
 
 a[href="/search"] {
-    color: #007bff; /* Cor do texto */
-    text-decoration: none; /* Remove o sublinhado */
-    font-weight: bold; /* Torna o texto em negrito */
-    background-color: #f8f9fa; /* Cor de fundo */
-    padding: 8px 15px; /* Espaçamento interno */
-    border-radius: 5px; /* Bordas arredondadas */
-    border: 1px solid #007bff; /* Borda */
-    transition: all 0.3s ease; /* Transição suave ao mudar o estilo */
+    color: #007bff;
+    /* Cor do texto */
+    text-decoration: none;
+    /* Remove o sublinhado */
+    font-weight: bold;
+    /* Torna o texto em negrito */
+    background-color: #f8f9fa;
+    /* Cor de fundo */
+    padding: 8px 15px;
+    /* Espaçamento interno */
+    border-radius: 5px;
+    /* Bordas arredondadas */
+    border: 1px solid #007bff;
+    /* Borda */
+    transition: all 0.3s ease;
+    /* Transição suave ao mudar o estilo */
 }
 
 a[href="/search"]:hover {
-    background-color: #007bff; /* Cor de fundo ao passar o mouse */
-    color: #ffffff; /* Cor do texto ao passar o mouse */
-    text-decoration: underline; /* Adiciona sublinhado ao passar o mouse */
+    background-color: #007bff;
+    /* Cor de fundo ao passar o mouse */
+    color: #ffffff;
+    /* Cor do texto ao passar o mouse */
+    text-decoration: underline;
+    /* Adiciona sublinhado ao passar o mouse */
 }
+
 .styled-button {
-    color: #007bff; /* Cor do texto */
-    text-decoration: none; /* Remove o sublinhado */
-    font-weight: bold; /* Torna o texto em negrito */
-    background-color: #f8f9fa; /* Cor de fundo */
-    padding: 8px 15px; /* Espaçamento interno */
-    border-radius: 5px; /* Bordas arredondadas */
-    border: 1px solid #007bff; /* Borda */
-    transition: all 0.3s ease; /* Transição suave ao mudar o estilo */
-    cursor: pointer; /* Muda o cursor para indicar que é clicável */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adiciona sombra ao botão */
+    color: #007bff;
+    /* Cor do texto */
+    text-decoration: none;
+    /* Remove o sublinhado */
+    font-weight: bold;
+    /* Torna o texto em negrito */
+    background-color: #f8f9fa;
+    /* Cor de fundo */
+    padding: 8px 15px;
+    /* Espaçamento interno */
+    border-radius: 5px;
+    /* Bordas arredondadas */
+    border: 1px solid #007bff;
+    /* Borda */
+    transition: all 0.3s ease;
+    /* Transição suave ao mudar o estilo */
+    cursor: pointer;
+    /* Muda o cursor para indicar que é clicável */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Adiciona sombra ao botão */
 }
 
 .styled-button:hover {
-    background-color: #007bff; /* Cor de fundo ao passar o mouse */
-    color: #ffffff; /* Cor do texto ao passar o mouse */
-    text-decoration: underline; /* Adiciona sublinhado ao passar o mouse */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Aumenta a sombra ao passar o mouse */
+    background-color: #007bff;
+    /* Cor de fundo ao passar o mouse */
+    color: #ffffff;
+    /* Cor do texto ao passar o mouse */
+    text-decoration: underline;
+    /* Adiciona sublinhado ao passar o mouse */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    /* Aumenta a sombra ao passar o mouse */
 }
-  
 
-.import-button {
+
+.logout-button {
     position: absolute;
     top: 30px;
     right: 40px;
     padding: 8px 15px;
     background-color: #007bff;
     color: white;
+
     text-decoration: none;
     border-radius: 5px;
     font-weight: bold;
+
     font-size: x-small;
 }
-
+.logout-button:visited {
+    color: white;
+}
 .modal {
     display: none;
     position: fixed;
@@ -159,8 +221,8 @@ a[href="/search"]:hover {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgb(0,0,0);
-    background-color: rgba(0,0,0,0.4);
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
     padding-top: 60px;
 }
 
@@ -193,22 +255,27 @@ body {
     line-height: 1.6;
     margin: 20px;
 }
+
 .item-details {
     border: 1px solid #ccc;
     padding: 20px;
     margin-bottom: 20px;
     border-radius: 5px;
 }
+
 .item-details h2 {
     margin-bottom: 10px;
     color: #333;
 }
+
 .item-details .field {
     margin-bottom: 10px;
 }
+
 .item-details .field label {
     font-weight: bold;
 }
+
 .item-details .field span {
     display: inline-block;
     width: 80%;
@@ -221,6 +288,7 @@ body {
     margin: 0;
     padding: 0;
 }
+
 .container {
     max-width: 95%;
     margin: 20px auto;
@@ -229,20 +297,23 @@ body {
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+
 .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 20px;
 }
+
 .header h1 {
     font-size: 24px;
     color: #343a40;
     margin: 0;
 }
+
 .import-button {
     text-decoration: none;
- 
+
     color: #fff;
     background-color: #007bff;
     padding: 10px 20px;
@@ -250,19 +321,23 @@ body {
     font-weight: bold;
     transition: background-color 0.3s;
 }
+
 .import-button:hover {
     background-color: #0056b3;
 }
+
 form {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
+
 .search-container {
     display: flex;
     align-items: center;
     gap: 10px;
 }
+
 input[type="text"] {
     flex: 1;
     padding: 10px;
@@ -272,42 +347,52 @@ input[type="text"] {
     width: 150%;
     box-sizing: border-box;
 }
+
 .styled-button {
-    text-decoration: none;         
+    text-decoration: none;
     color: #fff;
     background-color: #007bff;
     padding: 10px 20px;
-    border-radius: 5px; /* Bordas arredondadas */
-    border: 1px solid #007bff; /* Borda */
+    border-radius: 5px;
+    /* Bordas arredondadas */
+    border: 1px solid #007bff;
+    /* Borda */
     font-weight: bold;
     transition: background-color 0.3s;
 }
+
 .styled-button:hover {
     background-color: #0056b3;
 }
+
 .checkbox-group {
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
 }
+
 .checkbox-group label {
     display: flex;
     align-items: center;
     font-size: 16px;
     color: #495057;
 }
+
 .checkbox-group input[type="checkbox"] {
     margin-right: 10px;
 }
+
 .messages {
     margin-top: 20px;
     text-align: center;
 }
+
 .messages ul {
     list-style: none;
     padding: 0;
     margin: 0;
 }
+
 .messages li {
     background-color: #d4edda;
     color: #155724;
@@ -315,19 +400,26 @@ input[type="text"] {
     border-radius: 5px;
     margin-bottom: 10px;
 }
+
 table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
 }
-th, td {
+
+th,
+td {
     padding: 10px;
     text-align: left;
     border-bottom: 1px solid #dee2e6;
 }
+
 th {
     background-color: #f1f1f1;
 }
+
 .item-row {
     background-color: #f9f9f9;
 }
+
+/* Default link style */
