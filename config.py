@@ -8,4 +8,4 @@ class Config:
     REMEMBER_COOKIE_SECURE = True
     SESSION_COOKIE_HTTPONLY = True
     REMEMBER_COOKIE_HTTPONLY = True
-    PERMANENT_SESSION_LIFETIME = timedelta(minutes=1)
+    PERMANENT_SESSION_LIFETIME = timedelta(minutes=5)
