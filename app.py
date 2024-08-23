@@ -262,40 +262,6 @@ def home():
 def favicon():
     return url_for('static', filename='image/favicon.ico')
 
-@app.route('/run_playwright', methods=['POST'])
-def run_playwright():
-    descricao = request.json.get('descricao')
-    dt_entrega = request.json.get('dt_entrega')
-
-    with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(headless=False)
-        context = browser.new_context()
-        page = context.new_page()
-        page.goto("https://auth.sieg.com/login?ReturnUrl=https%3a%2f%2fcofre.sieg.com%2fpesquisa-avancada")
-        page.get_by_placeholder("E-mail").click()
-        page.get_by_placeholder("E-mail").fill("")
-        page.get_by_placeholder("Senha").click()
-        page.get_by_placeholder("Senha").fill("")
-        page.get_by_role("button", name="Entrar").click()
-        page.get_by_role("combobox").click()
-        page.get_by_text("Razão Social Emitente").click()
-        page.get_by_role("combobox").nth(1).click()
-        page.get_by_ext("Contém").click()
-        page.get_by_role("textbox").nth(1).fill(descricao)
-        page.get_by_text("Adicionar campo").click()
-        page.get_by_role("combobox").nth(3).select_option("EmissionDate")
-        page.get_by_role("combobox").nth(4).select_option("$gte")
-        page.get_by_placeholder("dd/mm/yyyy").click()
-        page.get_by_placeholder("dd/mm/yyyy").fill(dt_entrega)
-        page.get_by_role("button", name="Buscar").click()
-
-        # ---------------------
-        context.close()
-        browser.close()
-
-    return jsonify({'status': 'success'})
-
-
 @app.route('/import', methods=['GET', 'POST'])
 @login_required
 def import_data():
