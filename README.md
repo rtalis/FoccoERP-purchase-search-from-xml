@@ -26,7 +26,6 @@ Simplify and streamline the search process for purchase orders in FoccoERP with 
 2. Install dependencies:
     ```bash
     pip install -r requirements.txt
-    playwright install
     ```
 
 3. Setup the database:

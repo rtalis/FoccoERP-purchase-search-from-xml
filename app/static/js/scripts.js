@@ -62,30 +62,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-function runPlaywright(descricao, dt_entrega) {
-    // Call Playwright script via a fetch request to your backend endpoint
-    fetch('/run_playwright', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ descricao: descricao, dt_entrega: dt_entrega })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log('Playwright script executed successfully:', data);
-        // Optionally handle success feedback to the user
-    })
-    .catch(error => {
-        console.error('Error executing Playwright script:', error);
-        // Handle error feedback to the user
-    });
-}
 
 document.getElementById('misspelling-checkbox').addEventListener('change', function() {
     if (this.checked) {
