@@ -19,8 +19,8 @@ Simplify and streamline the search process for purchase orders in FoccoERP with 
 ### Setup
 1. Clone the repository:
     ```bash
-    git clone https://github.com/rtalis/foccoerp-search.git
-    cd foccoerp-search
+    git clone https://github.com/rtalis/FoccoERP-purchase-search-from-xml.git
+    cd FoccoERP-purchase-search-from-xml
     ```
 
 2. Install dependencies:
@@ -61,7 +61,7 @@ Simplify and streamline the search process for purchase orders in FoccoERP with 
 
 Add this to your cron job
    ```bash
-0 2 * * * /path/to/python /path/to/folder/app/tools/backup.py
+0 2 * * * /path/to/python /path/to/folder/FoccoERP-purchase-search-from-xml/app/tools/backup.py
 ```
 ## Contributions
 Fork this repository, create a branch, and submit a pull request with improvements or new features.
