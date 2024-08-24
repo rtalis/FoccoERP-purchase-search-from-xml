@@ -29,7 +29,7 @@ def import_data():
         return redirect(request.url)
     
     if not re.match(r'^RPDC.*(B|C).*\.xml$', file.filename, re.IGNORECASE):
-        flash('Formato inválido, insira um arquivo de relatório de compra de itens ou relatório de compra de no formato paisagem no formato XML')
+        flash('Formato inválido, insira um arquivo de relatório de pedidos de compra na visualização de itens no formato XML - RPDC0250B.xml ou RPDC0250C.xml (Listagem paisagem para NFs)  ')
         return redirect(request.url)
     
     xml_data = file.read()

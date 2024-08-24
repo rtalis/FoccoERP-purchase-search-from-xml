@@ -7,7 +7,7 @@ from app.forms import RegistrationForm, LoginForm
 bp = Blueprint('auth', __name__)
 
 @bp.route('/register', methods=['GET', 'POST'])
-@login_required
+#@login_required 
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
