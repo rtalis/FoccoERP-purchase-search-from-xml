@@ -90,7 +90,6 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(150), unique=True, nullable=False)
     email = db.Column(db.String(150), unique=True, nullable=False)
     password_hash = db.Column(db.String(256), nullable=False)
-    failed_attempts = db.Column(db.Integer, default=0)
     last_attempt = db.Column(db.DateTime, default=datetime.now)
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
