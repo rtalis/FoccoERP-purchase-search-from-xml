@@ -6,8 +6,12 @@ from app import db
 from app.models import User
 from wtforms.validators import DataRequired
 from app.forms import RegistrationForm, LoginForm
-bp = Blueprint('auth', __name__)
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
+
+bp = Blueprint('auth', __name__)
+limiter = Limiter(key_func=get_remote_address)
 
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
@@ -22,6 +26,7 @@ def register():
     return render_template('register.html', form=form)
 
 @bp.route('/login', methods=['GET', 'POST'])
+@limiter.limit("5 per 5 seconds")
 def login():
     form = LoginForm()
     user = None
@@ -43,10 +48,5 @@ def login():
                 flash('Invalid email or password.', 'danger')
         else:
             flash('Invalid email or password.', 'danger')
-
-    # Show the reCAPTCHA field if the user failed too many login attempts
-    if user and user.failed_attempts >= current_app.config['MAX_FAILED_ATTEMPTS']:
-        form.recaptcha.validators = [DataRequired()]
-    print(current_app.config['RECAPTCHA_PUBLIC_KEY'])
 
     return render_template('login.html', form=form)
