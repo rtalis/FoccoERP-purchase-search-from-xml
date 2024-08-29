@@ -51,6 +51,11 @@
                             </div>
                         {% endif %}
                     </div>
+                    {% if form.recaptcha %}
+                        <div class="form-group mb-3">
+                            {{ form.recaptcha }}
+                        </div>
+                    {% endif %}
                     <div class="form-group mb-3">
                         {{ form.remember_me(class="form-check-input") }}
                         {{ form.remember_me.label(class="form-check-label") }}
