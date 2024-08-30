@@ -36,15 +36,10 @@ def login():
 
         if user:
             if user.check_password(form.password.data):
-                user.failed_attempts = 0
-                user.last_attempt = datetime.now()
-                db.session.commit()
                 login_user(user, remember=form.remember_me.data)
                 return redirect(url_for('main.search'))
             else:
-                user.failed_attempts += 1
-                user.last_attempt = datetime.now()
-                db.session.commit()
+ 
                 flash('Invalid email or password.', 'danger')
         else:
             flash('Invalid email or password.', 'danger')
